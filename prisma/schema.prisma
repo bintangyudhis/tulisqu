@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Kategori catatan, biasanya satu mata kuliah.
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  notes     Note[]
+
+  @@index([name])
+}
+
+// Satu catatan. Isinya teks bebas; tautan referensi dan berkas
+// menyusul sebagai relasi di migrasi berikutnya.
+model Note {
+  id         String    @id @default(cuid())
+  title      String
+  content    String
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([categoryId, updatedAt])
+}
+
+// Satu tugas harian. dueDate menyimpan tanggal tugas (jam diabaikan
+// di lapisan tampilan); done menandai tugas sudah dikerjakan.
+model Task {
+  id        String   @id @default(cuid())
+  title     String
+  dueDate   DateTime
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([dueDate, done])
+}
