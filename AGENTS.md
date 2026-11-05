@@ -9,7 +9,8 @@
   #7 polish + README final).
 - Issue #1 ditutup lewat badan pesan commit TERAKHIR fitur scaffold
   (`Closes #1`), bukan commit pertama — pelajaran Day 13/15.
-- Skema: `Category` (name), `Note` (title, content, categoryId opsional,
+- Skema: `TulisCategory` (name; awalan Tulis karena `Category` sudah
+  dipakai dompetku-web di DB yang sama), `Note` (title, content, categoryId opsional,
   indeks categoryId+updatedAt), `Task` (title, dueDate, done, indeks
   dueDate+done). Migrasi `0001_tulis_init` ditulis tangan (nama unik,
   tidak bentrok dengan repo lain di DB `dompetku` yang sama);

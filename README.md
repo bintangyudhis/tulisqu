@@ -35,7 +35,7 @@ kosong tanpa penanda itu.
 
 ## Skema
 
-Migrasi `0001_tulis_init` membuat tiga tabel: `Category` (nama kategori),
+Migrasi `0001_tulis_init` membuat tiga tabel: `TulisCategory` (nama kategori),
 `Note` (judul, isi, kategori opsional), dan `Task` (judul, tanggal, status
 selesai). Nama migrasi dibuat unik agar tidak bentrok dengan repo lain yang
 memakai database yang sama.
