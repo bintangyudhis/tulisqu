@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R5 V4 */
+/* Hallmark · macrostructure: Lecture Ledger · theme: Meja Kuliah · genre: editorial
+ * paper: light (#fbfaf4) · display: grotesk-sans (Bricolage Grotesque, roman, heavy)
+ * accent: solid leaf-green (#1f5c3d) · nav: edge-aligned sticky bar
+ * footer: statement-line · enrichment: none (typography only)
+ * motion: none */
+
+@theme inline {
+  --color-paper: #fbfaf4;
+  --color-panel: #ffffff;
+  --color-ink: #20241c;
+  --color-muted: #5d665a;
+  --color-accent: #1f5c3d;
+  --color-line: #d9ddd0;
+  --font-sans: var(--font-plex-sans);
+  --font-display: var(--font-bricolage);
+  --font-mono: var(--font-plex-mono);
+}
+
+html,
+body {
+  /* Pagar anti melebar: halaman tidak boleh bisa digeser menyamping di HP. */
+  overflow-x: clip;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* Fokus keyboard yang jelas di semua elemen interaktif. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
