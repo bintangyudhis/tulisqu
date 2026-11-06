@@ -6,14 +6,17 @@ export default function BilahAtas() {
           Tulisqu
         </a>
         <nav aria-label="Bagian halaman" className="flex flex-wrap gap-x-6 gap-y-1 text-sm font-medium">
-          <a href="#catatan" className="hover:text-accent">
+          <a href="/#catatan" className="hover:text-accent">
             Catatan
           </a>
-          <a href="#berkas" className="hover:text-accent">
+          <a href="/#berkas" className="hover:text-accent">
             Berkas dan tautan
           </a>
-          <a href="#tugas" className="hover:text-accent">
+          <a href="/#tugas" className="hover:text-accent">
             Tugas harian
+          </a>
+          <a href="/meja" className="font-bold text-accent">
+            Meja kerja
           </a>
         </nav>
         <p className="ml-auto font-mono text-xs text-muted">catatan · berkas · tugas</p>
