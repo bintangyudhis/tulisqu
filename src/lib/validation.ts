@@ -44,6 +44,10 @@ export function validId(value: string): string {
 }
 
 export async function readJsonBody(request: Request): Promise<Record<string, unknown>> {
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > 1024 * 1024) {
+    throw new Error("Badan permintaan terlalu besar (maks 1 MB).");
+  }
   let parsed: unknown;
   try {
     parsed = await request.json();
