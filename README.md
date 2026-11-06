@@ -6,10 +6,32 @@ menyimpan tautan, dan menyusun tugas harian.
 
 ## Fitur
 
-- Catatan dengan kategori per mata kuliah
-- Unggah berkas pendukung seperti PDF, dokumen, dan presentasi
-- Penyimpanan tautan referensi di dalam catatan
+- Catatan dengan kategori per mata kuliah — buat, baca, ubah, hapus
+- Unggah berkas pendukung seperti PDF, dokumen, dan presentasi ke catatan
+- Penyimpanan tautan referensi di dalam catatan, judul halaman diambil otomatis
 - Daftar tugas harian
+
+## Meja kerja
+
+Halaman `/meja` adalah tempat kerja utama: kolom kiri berisi daftar kategori
+dan daftar catatan, kolom kanan berisi isi catatan beserta lampiran dan
+tautannya. Semua perubahan tersimpan lewat API berikut:
+
+| Route | Fungsi |
+| --- | --- |
+| `GET/POST /api/categories` | Daftar dan buat kategori |
+| `PATCH/DELETE /api/categories/[id]` | Ubah dan hapus kategori |
+| `GET/POST /api/notes` | Daftar (saring `?categoryId=`) dan buat catatan |
+| `GET/PATCH/DELETE /api/notes/[id]` | Baca, ubah, dan hapus satu catatan |
+| `GET/POST /api/notes/[id]/attachments` | Daftar dan unggah lampiran |
+| `GET/DELETE /api/notes/[id]/attachments/[attachmentId]` | Tautan unduh dan hapus lampiran |
+| `GET/POST /api/notes/[id]/links` | Daftar dan simpan tautan |
+| `DELETE /api/notes/[id]/links/[linkId]` | Hapus tautan |
+
+Berkas yang diterima: pdf, doc, docx, ppt, pptx, maks 10 MB per berkas.
+Berkas disimpan di bucket Storage `tulisqu-files` (privat; unduhan memakai
+tautan bertanda tangan 1 jam) dan membutuhkan `SUPABASE_URL` serta
+`SUPABASE_SERVICE_ROLE_KEY` di environment server.
 
 ## Teknologi
 
@@ -37,8 +59,11 @@ kosong tanpa penanda itu.
 
 Migrasi `0001_tulis_init` membuat tiga tabel: `TulisCategory` (nama kategori),
 `Note` (judul, isi, kategori opsional), dan `Task` (judul, tanggal, status
-selesai). Nama migrasi dibuat unik agar tidak bentrok dengan repo lain yang
-memakai database yang sama.
+selesai). Migrasi `0002_tulis_files_links` menambah `Attachment` (nama berkas,
+tipe MIME, ukuran, jalur Storage) dan `Link` (alamat dan judul halaman),
+keduanya menempel pada catatan dan ikut terhapus saat catatannya dihapus.
+Nama migrasi dibuat unik agar tidak bentrok dengan repo lain yang memakai
+database yang sama.
 
 ## Lisensi
 
