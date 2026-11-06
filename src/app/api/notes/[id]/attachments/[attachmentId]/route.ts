@@ -1,9 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { getDownloadUrl, removeAttachment } from "@/lib/storage";
 import { errorResponse, validId } from "@/lib/validation";
+import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
-
-export const dynamic = "force-dynamic";
 
 type RouteParams = {
   params: Promise<{ id: string; attachmentId: string }>;
@@ -23,6 +22,7 @@ async function findAttachment(noteId: string, attachmentId: string) {
 // Tautan unduh bertanda tangan (berlaku 1 jam). Bucket bersifat privat,
 // jadi berkas tidak pernah diekspos lewat alamat Storage mentah.
 export async function GET(_request: Request, { params }: RouteParams) {
+  await connection();
   let ids: { noteId: string; attachmentId: string };
   try {
     ids = await readIds(params);

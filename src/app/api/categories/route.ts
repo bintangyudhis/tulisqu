@@ -4,11 +4,11 @@ import {
   parseCategoryBody,
   readJsonBody,
 } from "@/lib/validation";
+import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
+  await connection();
   try {
     const categories = await prisma.tulisCategory.findMany({
       orderBy: { name: "asc" },

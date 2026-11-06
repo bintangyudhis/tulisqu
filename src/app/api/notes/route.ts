@@ -4,11 +4,11 @@ import {
   parseNoteBody,
   readJsonBody,
 } from "@/lib/validation";
+import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(request: Request) {
+  await connection();
   try {
     const categoryId =
       new URL(request.url).searchParams.get("categoryId") || undefined;

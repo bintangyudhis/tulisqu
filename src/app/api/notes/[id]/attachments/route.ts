@@ -6,13 +6,13 @@ import {
   uploadAttachment,
 } from "@/lib/storage";
 import { errorResponse, validId } from "@/lib/validation";
+import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
-
-export const dynamic = "force-dynamic";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, { params }: RouteParams) {
+  await connection();
   let noteId: string;
   try {
     noteId = validId((await params).id);

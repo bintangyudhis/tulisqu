@@ -6,9 +6,8 @@ import {
   readJsonBody,
   validId,
 } from "@/lib/validation";
+import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
-
-export const dynamic = "force-dynamic";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -23,6 +22,7 @@ async function readId(params: RouteParams["params"]): Promise<string> {
 }
 
 export async function GET(_request: Request, { params }: RouteParams) {
+  await connection();
   let id: string;
   try {
     id = await readId(params);

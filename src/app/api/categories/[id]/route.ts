@@ -5,9 +5,8 @@ import {
   readJsonBody,
   validId,
 } from "@/lib/validation";
+import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
-
-export const dynamic = "force-dynamic";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
