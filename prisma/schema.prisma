@@ -29,7 +29,40 @@ model Note {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
+  attachments Attachment[]
+  links       Link[]
+
   @@index([categoryId, updatedAt])
+}
+
+// Berkas pendukung yang diunggah untuk satu catatan. Hanya PDF,
+// dokumen Word, dan presentasi yang diterima; jalurnya menunjuk
+// objek di bucket Storage `tulisqu-files`.
+model Attachment {
+  id          String   @id @default(cuid())
+  noteId      String
+  note        Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  fileName    String
+  mimeType    String
+  sizeBytes   Int
+  storagePath String
+  createdAt   DateTime @default(now())
+
+  @@index([noteId, createdAt])
+}
+
+// Tautan referensi yang disimpan di satu catatan. Judul halaman
+// diambil sekali saat tautan disimpan, supaya daftar tetap bisa
+// dibaca walau halaman asalnya sedang tidak bisa dibuka.
+model Link {
+  id        String   @id @default(cuid())
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  url       String
+  title     String?
+  createdAt DateTime @default(now())
+
+  @@index([noteId, createdAt])
 }
 
 // Satu tugas harian. dueDate menyimpan tanggal tugas (jam diabaikan
