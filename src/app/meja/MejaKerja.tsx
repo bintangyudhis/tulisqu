@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import DaftarKategori from "./DaftarKategori";
 import DaftarCatatan from "./DaftarCatatan";
 import EditorCatatan from "./EditorCatatan";
@@ -20,15 +20,23 @@ function formatTanggal(iso: string): string {
   });
 }
 
-export default function MejaKerja() {
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [notes, setNotes] = useState<NoteListItem[]>([]);
+export default function MejaKerja({
+  initialCategories,
+  initialNotes,
+}: {
+  initialCategories: CategoryItem[];
+  initialNotes: NoteListItem[];
+}) {
+  const [categories, setCategories] = useState<CategoryItem[]>(
+    initialCategories,
+  );
+  const [notes, setNotes] = useState<NoteListItem[]>(initialNotes);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
   const [selectedNote, setSelectedNote] = useState<NoteDetail | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
-  const [memuat, setMemuat] = useState(true);
+  const [memuat, setMemuat] = useState(false);
   const [galat, setGalat] = useState<string | null>(null);
 
   const loadCategories = useCallback(async () => {
@@ -55,33 +63,29 @@ export default function MejaKerja() {
     setSelectedNote(body.note);
   }, []);
 
-  const refreshAll = useCallback(async () => {
-    setGalat(null);
-    try {
-      await loadCategories();
-      await loadNotes(selectedCategoryId);
-    } catch (error) {
-      setGalat(
-        error instanceof Error ? error.message : "Data tidak bisa dimuat.",
-      );
-    }
-  }, [loadCategories, loadNotes, selectedCategoryId]);
-
-  useEffect(() => {
-    let aktif = true;
-    setMemuat(true);
-    refreshAll().finally(() => {
-      if (aktif) setMemuat(false);
-    });
-    return () => {
-      aktif = false;
-    };
-  }, [refreshAll]);
+  const refreshAll = useCallback(
+    async (categoryId: string | null = selectedCategoryId) => {
+      setGalat(null);
+      setMemuat(true);
+      try {
+        await loadCategories();
+        await loadNotes(categoryId);
+      } catch (error) {
+        setGalat(
+          error instanceof Error ? error.message : "Data tidak bisa dimuat.",
+        );
+      } finally {
+        setMemuat(false);
+      }
+    },
+    [loadCategories, loadNotes, selectedCategoryId],
+  );
 
   function pilihKategori(id: string | null) {
     setSelectedCategoryId(id);
     setSelectedNote(null);
     setEditorOpen(false);
+    void refreshAll(id);
   }
 
   async function pilihCatatan(id: string) {
@@ -160,6 +164,7 @@ export default function MejaKerja() {
           <div>
             {editorOpen || (selectedNote === null && notes.length === 0) ? (
               <EditorCatatan
+                key={editorOpen ? (selectedNote?.id ?? "baru") : "baru"}
                 note={editorOpen ? selectedNote : null}
                 categories={categories}
                 defaultCategoryId={selectedCategoryId}

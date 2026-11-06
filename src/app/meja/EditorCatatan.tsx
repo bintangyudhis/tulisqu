@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { CategoryItem, NoteDetail } from "./tipe";
 
 type Props = {
@@ -36,13 +36,6 @@ export default function EditorCatatan({
   );
   const [galat, setGalat] = useState<string | null>(null);
   const [sibuk, setSibuk] = useState(false);
-
-  useEffect(() => {
-    setJudul(note?.title ?? "");
-    setIsi(note?.content ?? "");
-    setKategoriId(note?.categoryId ?? defaultCategoryId ?? "");
-    setGalat(null);
-  }, [note, defaultCategoryId]);
 
   async function simpan(event: React.FormEvent) {
     event.preventDefault();
