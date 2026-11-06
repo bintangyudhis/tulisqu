@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { errorResponse, validId } from "@/lib/validation";
-import { connection } from "next/server";
 import { writeLimitExceeded } from "@/lib/rate-limit";
 
 type RouteParams = { params: Promise<{ id: string; linkId: string }> };
