@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
-import { errorResponse } from "@/lib/validation";
+import {
+  errorResponse,
+  parseTaskBody,
+  readJsonBody,
+} from "@/lib/validation";
 import { connection } from "next/server";
+import { writeLimitExceeded } from "@/lib/rate-limit";
 
 // Batas hari dalam zona WIB: tanggal YYYY-MM-DD diartikan tengah malam
 // WIB, supaya "hari ini" di server UTC sama dengan "hari ini" pengguna.
@@ -40,5 +45,29 @@ export async function GET(request: Request) {
     return Response.json({ tasks });
   } catch {
     return errorResponse("Gagal memuat tugas.", 500);
+  }
+}
+
+export async function POST(request: Request) {
+  if (writeLimitExceeded(request, "tasks")) {
+    return errorResponse("Terlalu banyak permintaan. Coba lagi sebentar.", 429);
+  }
+  let data: { title: string; dueDate: Date };
+  try {
+    const body = await readJsonBody(request);
+    data = parseTaskBody(body);
+  } catch (error) {
+    return errorResponse(
+      error instanceof Error ? error.message : "Masukan tidak valid.",
+      400,
+    );
+  }
+  try {
+    const task = await prisma.task.create({
+      data: { title: data.title, dueDate: data.dueDate },
+    });
+    return Response.json({ task }, { status: 201 });
+  } catch {
+    return errorResponse("Gagal membuat tugas.", 500);
   }
 }
