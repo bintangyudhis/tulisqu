@@ -42,3 +42,29 @@ export async function PATCH(
     return errorResponse("Gagal mengubah tugas.", 500);
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  if (writeLimitExceeded(request, "tasks")) {
+    return errorResponse("Terlalu banyak permintaan. Coba lagi sebentar.", 429);
+  }
+  let id: string;
+  try {
+    id = validId((await params).id);
+  } catch (error) {
+    return errorResponse(
+      error instanceof Error ? error.message : "ID tidak valid.",
+      400,
+    );
+  }
+  try {
+    const existing = await prisma.task.findUnique({ where: { id } });
+    if (!existing) return errorResponse("Tugas tidak ditemukan.", 404);
+    await prisma.task.delete({ where: { id } });
+    return Response.json({ ok: true });
+  } catch {
+    return errorResponse("Gagal menghapus tugas.", 500);
+  }
+}
