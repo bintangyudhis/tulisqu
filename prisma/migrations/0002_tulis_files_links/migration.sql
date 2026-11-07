@@ -30,6 +30,6 @@ ALTER TABLE "Attachment" ADD CONSTRAINT "Attachment_noteId_fkey"
   FOREIGN KEY ("noteId") REFERENCES "Note"("id")
   ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "Link" ADD CONSTRAINT "TulisLink_noteId_fkey"
+ALTER TABLE "TulisLink" ADD CONSTRAINT "TulisLink_noteId_fkey"
   FOREIGN KEY ("noteId") REFERENCES "Note"("id")
   ON DELETE CASCADE ON UPDATE CASCADE;

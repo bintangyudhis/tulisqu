@@ -130,3 +130,13 @@
 - Verifikasi lokal: `prisma generate && next build` + lint lolos.
   Deploy dipicu lewat commit kosong `Deploy: tulisqu` sesudah
   commit perbaikan `[skip-vercel]` ter-push.
+- Deploy pertama sesudah pembersihan: migrasi 0001 Lolos (tabel
+  TulisCategory, Note, Task jadi), tetapi 0002 Gagal P3018 (error
+  42703 kolom noteId tidak ada). Penyebabnya penggantian nama
+  pertama melewatkan satu tempat: baris `ALTER TABLE "Link"` di SQL
+  0002, sehingga constraint nyaris dipasang ke tabel Link milik
+  pendekin. Sudah diperbaiki menjadi `ALTER TABLE "TulisLink"` dan
+  baris migrasi 0002 yang gagal dibersihkan lagi dengan pola yang
+  sama sebelum deploy ulang. Pelajaran: ganti nama tabel di SQL
+  migrasi wajib cek SEMUA kemunculan identifier (CREATE, INDEX,
+  ALTER, constraint), bukan hanya yang terlihat pertama.
