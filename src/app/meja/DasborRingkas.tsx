@@ -47,6 +47,65 @@ export default function DasborRingkas({
           </div>
         ))}
       </div>
+      <div className="mt-10 grid gap-10 md:grid-cols-2">
+        <div>
+          <h2 className="font-mono text-xs tracking-wide text-accent uppercase">
+            Tugas hari ini
+          </h2>
+          {tugasHariIni.length === 0 ? (
+            <p className="mt-4 leading-relaxed text-muted">
+              Tidak ada tugas untuk hari ini. Tambah dari panel tugas di bawah.
+            </p>
+          ) : (
+            <ul className="mt-4 divide-y divide-line border-y border-line">
+              {tugasHariIni.map((task) => (
+                <li key={task.id} className="py-3">
+                  <span
+                    className={`block leading-snug font-bold ${
+                      task.done ? "text-muted line-through" : ""
+                    }`}
+                  >
+                    {task.title}
+                  </span>
+                  <span className="mt-1 block font-mono text-xs text-muted">
+                    {task.done ? "selesai" : "belum dikerjakan"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div>
+          <h2 className="font-mono text-xs tracking-wide text-accent uppercase">
+            Catatan terbaru
+          </h2>
+          {catatanTerbaru.length === 0 ? (
+            <p className="mt-4 leading-relaxed text-muted">
+              Belum ada catatan. Tulis yang pertama dari daftar catatan.
+            </p>
+          ) : (
+            <ul className="mt-4 divide-y divide-line border-y border-line">
+              {catatanTerbaru.map((note) => (
+                <li key={note.id}>
+                  <button
+                    type="button"
+                    onClick={() => onSelectNote(note.id)}
+                    className="block w-full py-3 text-left"
+                  >
+                    <span className="block leading-snug font-bold">
+                      {note.title}
+                    </span>
+                    <span className="mt-1 block font-mono text-xs text-muted">
+                      {note.category?.name ?? "Tanpa kategori"} ·{" "}
+                      {formatTanggal(note.updatedAt)}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </section>
   );
 }
