@@ -5,7 +5,7 @@ import type { TaskItem } from "./tipe";
 
 type Props = {
   tasks: TaskItem[];
-  tanggalDipilih?: string;
+  tanggalDipilih?: string | null;
   onPilihTanggal?: (tanggal: string | null) => void;
   onChanged: () => void;
 };
