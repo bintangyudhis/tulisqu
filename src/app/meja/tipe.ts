@@ -41,3 +41,11 @@ export type NoteDetail = Omit<NoteListItem, "_count"> & {
   attachments: AttachmentItem[];
   links: LinkItem[];
 };
+
+export type TaskItem = {
+  id: string;
+  title: string;
+  dueDate: string;
+  done: boolean;
+  createdAt: string;
+};
