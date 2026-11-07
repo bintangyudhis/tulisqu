@@ -24,7 +24,33 @@ export default function DaftarTugas({ tasks, onChanged }: Props) {
   const [judul, setJudul] = useState("");
   const [tanggal, setTanggal] = useState(tanggalHariIni());
   const [menyimpan, setMenyimpan] = useState(false);
+  const [mengubahId, setMengubahId] = useState<string | null>(null);
   const [galat, setGalat] = useState<string | null>(null);
+
+  async function ubahStatus(task: TaskItem) {
+    setGalat(null);
+    setMengubahId(task.id);
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ done: !task.done }),
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(body?.error ?? "Status tugas tidak bisa diubah.");
+      }
+      onChanged();
+    } catch (error) {
+      setGalat(
+        error instanceof Error ? error.message : "Status tugas tidak bisa diubah.",
+      );
+    } finally {
+      setMengubahId(null);
+    }
+  }
 
   async function tambahTugas(event: React.FormEvent) {
     event.preventDefault();
@@ -101,12 +127,27 @@ export default function DaftarTugas({ tasks, onChanged }: Props) {
       ) : (
         <ul className="mt-4 divide-y divide-line border-y border-line">
           {tasks.map((task) => (
-            <li key={task.id} className="py-3">
-              <span className="block font-display text-lg leading-snug font-bold">
-                {task.title}
-              </span>
-              <span className="mt-1 block font-mono text-xs text-muted">
-                {formatTanggal(task.dueDate)}
+            <li key={task.id} className="flex items-start gap-3 py-3">
+              <input
+                type="checkbox"
+                checked={task.done}
+                disabled={mengubahId === task.id}
+                onChange={() => void ubahStatus(task)}
+                aria-label={`Tandai selesai: ${task.title}`}
+                className="mt-1 h-5 w-5 accent-[#1f5c3d]"
+              />
+              <span className="min-w-0 flex-1">
+                <span
+                  className={`block font-display text-lg leading-snug font-bold ${
+                    task.done ? "text-muted line-through" : ""
+                  }`}
+                >
+                  {task.title}
+                </span>
+                <span className="mt-1 block font-mono text-xs text-muted">
+                  {formatTanggal(task.dueDate)}
+                  {task.done ? " · selesai" : ""}
+                </span>
               </span>
             </li>
           ))}
