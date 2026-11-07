@@ -94,3 +94,59 @@ export function parseLinkBody(body: Record<string, unknown>): { url: string } {
   }
   return { url: parsed.toString() };
 }
+
+// Tanggal tugas memakai format YYYY-MM-DD dari input date di peramban.
+// Disimpan sebagai tengah malam WIB (UTC+7) supaya filter "hari ini"
+// tidak bergeser saat server berjalan di UTC.
+export function parseTanggalTugas(value: unknown): Date {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new Error("Tanggal tugas harus memakai format YYYY-MM-DD.");
+  }
+  const parsed = new Date(`${value}T00:00:00+07:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    throw new Error("Tanggal tugas tidak valid.");
+  }
+  const year = Number(value.slice(0, 4));
+  if (year < 2020 || year > 2100) {
+    throw new Error("Tanggal tugas di luar jangkauan yang wajar.");
+  }
+  return parsed;
+}
+
+export function parseTaskBody(body: Record<string, unknown>): {
+  title: string;
+  dueDate: Date;
+} {
+  return {
+    title: requiredText(body.title, "Judul tugas", 200),
+    dueDate: parseTanggalTugas(body.dueDate),
+  };
+}
+
+export function parseTaskPatchBody(body: Record<string, unknown>): {
+  title?: string;
+  dueDate?: Date;
+  done?: boolean;
+} {
+  const patch: { title?: string; dueDate?: Date; done?: boolean } = {};
+  if (body.title !== undefined) {
+    patch.title = requiredText(body.title, "Judul tugas", 200);
+  }
+  if (body.dueDate !== undefined) {
+    patch.dueDate = parseTanggalTugas(body.dueDate);
+  }
+  if (body.done !== undefined) {
+    if (typeof body.done !== "boolean") {
+      throw new Error("Status selesai harus berupa benar atau salah.");
+    }
+    patch.done = body.done;
+  }
+  if (
+    patch.title === undefined &&
+    patch.dueDate === undefined &&
+    patch.done === undefined
+  ) {
+    throw new Error("Tidak ada perubahan yang diberikan.");
+  }
+  return patch;
+}
