@@ -72,3 +72,39 @@
   mengulang ERROR yang sama dan membakar satu build. Semua 29 commit
   Day 19 berstatus CANCELED di Vercel (ignoreCommand `[skip-vercel]`
   bekerja sesuai rancangan).
+
+## Pelajaran Day 20 (daily task, pencarian, dasbor ringkas)
+- 21 commit, semua ter-push. Issues #5 (daily task) dan #6 (pencarian +
+  dasbor) TERTUTUP via `Closes #5, Closes #6` di badan pesan commit
+  wiring MejaKerja; #7 tetap terbuka untuk Day 21 (polish + README).
+- API: `GET/POST /api/tasks` (saring `?date=YYYY-MM-DD` atau `?all=1`;
+  tanpa parameter = tugas hari ini), `PATCH/DELETE /api/tasks/[id]`,
+  `GET /api/notes/search` (judul/isi, min 2 karakter, maks 20 hasil,
+  saring `?categoryId=`), `GET /api/dashboard` (jumlah catatan/kategori,
+  tugas hari ini total+selesai, tugas terlambat, 5 catatan terbaru).
+  Validasi tanggal tugas di `lib/validation.ts`: format YYYY-MM-DD,
+  disimpan tengah malam WIB (+07:00) supaya filter hari tidak bergeser
+  di server UTC. Pembatas laju tulis 30/menit per IP dipakai juga di
+  route tugas; pencarian (GET) tidak dibatasi laju.
+- UI: `DaftarTugas` (form tambah + centang + hapus + filter Hari ini/
+  Besok/Semua/tanggal), `PencarianCatatan` (debounce 400 ms, hasil bisa
+  diklik membuka catatan), `DasborRingkas` (4 kartu angka + tugas hari
+  ini + catatan terbaru). Data awal dimuat di server component page.tsx
+  (tugas hari ini + ringkasan + 5 catatan terbaru), lalu disegarkan
+  lewat handler eksplisit, bukan effect.
+- Jebakan tanggal: dueDate ISO tersimpan sebagai 17:00 UTC hari
+  sebelumnya, jadi `startsWith(tanggal)` di klien SALAH untuk menyaring
+  hari ini. Dasbor memakai daftar tugas hari ini dari API/server
+  (`tugasHariIniDasbor`), bukan filter string di klien.
+- Build: `prisma generate && next build` + `npm run lint` lolos; satu
+  perbaikan tipe (`tanggalDipilih` menerima `null`) sesudah build
+  pertama gagal type check. Tidak ada migrasi baru: tabel Task sudah
+  ada di 0001_tulis_init.
+- Sapuan keamanan ringan Day 20: tidak ada secret di history maupun
+  file baru; service-role key hanya dibaca dari env (kode Day 19).
+  Belum ada autentikasi di tulisqu — batasan yang diketahui.
+- DEPLOY Day 20 SENGAJA TIDAK DIPICU: situs masih 404 pada cek 7 Nov
+  ±06:47 WIB, tidak ada tanda SQL `resolve --rolled-back` sudah
+  dijalankan Yudhis; pengingat SQL terakhir sudah terkirim pagi ini
+  dengan janji tidak mengingatkan lagi. Semua 21 commit Day 20
+  `[skip-vercel]` (CANCELED di Vercel, sesuai rancangan).
