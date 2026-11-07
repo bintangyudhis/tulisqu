@@ -14,22 +14,22 @@ CREATE TABLE "Attachment" (
   CONSTRAINT "Attachment_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "Link" (
+CREATE TABLE "TulisLink" (
   "id" TEXT NOT NULL,
   "noteId" TEXT NOT NULL,
   "url" TEXT NOT NULL,
   "title" TEXT,
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT "Link_pkey" PRIMARY KEY ("id")
+  CONSTRAINT "TulisLink_pkey" PRIMARY KEY ("id")
 );
 
 CREATE INDEX "Attachment_noteId_createdAt_idx" ON "Attachment"("noteId", "createdAt");
-CREATE INDEX "Link_noteId_createdAt_idx" ON "Link"("noteId", "createdAt");
+CREATE INDEX "TulisLink_noteId_createdAt_idx" ON "TulisLink"("noteId", "createdAt");
 
 ALTER TABLE "Attachment" ADD CONSTRAINT "Attachment_noteId_fkey"
   FOREIGN KEY ("noteId") REFERENCES "Note"("id")
   ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "Link" ADD CONSTRAINT "Link_noteId_fkey"
+ALTER TABLE "Link" ADD CONSTRAINT "TulisLink_noteId_fkey"
   FOREIGN KEY ("noteId") REFERENCES "Note"("id")
   ON DELETE CASCADE ON UPDATE CASCADE;

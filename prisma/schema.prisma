@@ -30,7 +30,7 @@ model Note {
   updatedAt  DateTime  @updatedAt
 
   attachments Attachment[]
-  links       Link[]
+  links       TulisLink[]
 
   @@index([categoryId, updatedAt])
 }
@@ -54,7 +54,7 @@ model Attachment {
 // Tautan referensi yang disimpan di satu catatan. Judul halaman
 // diambil sekali saat tautan disimpan, supaya daftar tetap bisa
 // dibaca walau halaman asalnya sedang tidak bisa dibuka.
-model Link {
+model TulisLink {
   id        String   @id @default(cuid())
   noteId    String
   note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
