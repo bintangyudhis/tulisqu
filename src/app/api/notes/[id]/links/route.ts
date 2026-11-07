@@ -23,7 +23,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
     );
   }
   try {
-    const links = await prisma.link.findMany({
+    const links = await prisma.tulisLink.findMany({
       where: { noteId },
       orderBy: { createdAt: "asc" },
     });
@@ -70,7 +70,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       }
       title = null;
     }
-    const link = await prisma.link.create({
+    const link = await prisma.tulisLink.create({
       data: { noteId, url, title },
     });
     return Response.json({ link }, { status: 201 });

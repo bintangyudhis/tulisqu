@@ -21,11 +21,11 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     );
   }
   try {
-    const link = await prisma.link.findFirst({
+    const link = await prisma.tulisLink.findFirst({
       where: { id: linkId, noteId },
     });
     if (!link) return errorResponse("Tautan tidak ditemukan.", 404);
-    await prisma.link.delete({ where: { id: link.id } });
+    await prisma.tulisLink.delete({ where: { id: link.id } });
     return Response.json({ ok: true });
   } catch {
     return errorResponse("Gagal menghapus tautan.", 500);
