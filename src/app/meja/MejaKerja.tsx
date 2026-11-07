@@ -3,13 +3,18 @@
 import { useCallback, useState } from "react";
 import DaftarKategori from "./DaftarKategori";
 import DaftarCatatan from "./DaftarCatatan";
+import DaftarTugas from "./DaftarTugas";
+import DasborRingkas from "./DasborRingkas";
 import EditorCatatan from "./EditorCatatan";
 import LampiranCatatan from "./LampiranCatatan";
+import PencarianCatatan from "./PencarianCatatan";
 import TautanCatatan from "./TautanCatatan";
 import type {
   CategoryItem,
+  DashboardSummary,
   NoteDetail,
   NoteListItem,
+  TaskItem,
 } from "./tipe";
 
 function formatTanggal(iso: string): string {
@@ -20,17 +25,39 @@ function formatTanggal(iso: string): string {
   });
 }
 
+function tanggalHariIni(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+}
+
 export default function MejaKerja({
   initialCategories,
   initialNotes,
+  initialTasks,
+  initialSummary,
+  initialRecentNotes,
 }: {
   initialCategories: CategoryItem[];
   initialNotes: NoteListItem[];
+  initialTasks: TaskItem[];
+  initialSummary: DashboardSummary;
+  initialRecentNotes: NoteListItem[];
 }) {
   const [categories, setCategories] = useState<CategoryItem[]>(
     initialCategories,
   );
   const [notes, setNotes] = useState<NoteListItem[]>(initialNotes);
+  const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
+  const [tanggalTugas, setTanggalTugas] = useState<string | null>(
+    tanggalHariIni(),
+  );
+  const [summary, setSummary] = useState<DashboardSummary>(initialSummary);
+  const [recentNotes, setRecentNotes] =
+    useState<NoteListItem[]>(initialRecentNotes);
+  // Tugas hari ini untuk dasbor disimpan terpisah: dueDate tersimpan
+  // sebagai tengah malam WIB, jadi awalan string ISO (UTC) tidak bisa
+  // dipakai untuk menyaring tanggal di klien.
+  const [tugasHariIniDasbor, setTugasHariIniDasbor] =
+    useState<TaskItem[]>(initialTasks);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
@@ -63,6 +90,28 @@ export default function MejaKerja({
     setSelectedNote(body.note);
   }, []);
 
+  const loadTasks = useCallback(async (tanggal: string | null) => {
+    const query =
+      tanggal === null ? "/api/tasks?all=1" : `/api/tasks?date=${tanggal}`;
+    const response = await fetch(query);
+    if (!response.ok) throw new Error("Tugas tidak bisa dimuat.");
+    const body = (await response.json()) as { tasks: TaskItem[] };
+    setTasks(body.tasks);
+  }, []);
+
+  const loadDashboard = useCallback(async () => {
+    const response = await fetch("/api/dashboard");
+    if (!response.ok) throw new Error("Ringkasan tidak bisa dimuat.");
+    const body = (await response.json()) as {
+      summary: DashboardSummary;
+      catatanTerbaru: NoteListItem[];
+      tugasHariIni: TaskItem[];
+    };
+    setSummary(body.summary);
+    setRecentNotes(body.catatanTerbaru);
+    setTugasHariIniDasbor(body.tugasHariIni);
+  }, []);
+
   const refreshAll = useCallback(
     async (categoryId: string | null = selectedCategoryId) => {
       setGalat(null);
@@ -86,6 +135,30 @@ export default function MejaKerja({
     setSelectedNote(null);
     setEditorOpen(false);
     void refreshAll(id);
+  }
+
+  async function pilihTanggalTugas(tanggal: string | null) {
+    setTanggalTugas(tanggal);
+    setGalat(null);
+    try {
+      await loadTasks(tanggal);
+    } catch (error) {
+      setGalat(
+        error instanceof Error ? error.message : "Tugas tidak bisa dimuat.",
+      );
+    }
+  }
+
+  async function setelahTugasBerubah() {
+    setGalat(null);
+    try {
+      await loadTasks(tanggalTugas);
+      await loadDashboard();
+    } catch (error) {
+      setGalat(
+        error instanceof Error ? error.message : "Tugas tidak bisa dimuat.",
+      );
+    }
   }
 
   async function pilihCatatan(id: string) {
@@ -146,13 +219,30 @@ export default function MejaKerja({
       {memuat ? (
         <p className="mt-10 text-muted">Memuat meja kerja…</p>
       ) : (
-        <div className="mt-10 grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)]">
+        <>
+          <DasborRingkas
+            summary={summary}
+            catatanTerbaru={recentNotes}
+            tugasHariIni={tugasHariIniDasbor}
+            onSelectNote={(id) => void pilihCatatan(id)}
+          />
+          <div className="mt-10 grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)]">
           <div className="space-y-10">
+            <PencarianCatatan
+              categoryId={selectedCategoryId}
+              onSelect={(id) => void pilihCatatan(id)}
+            />
             <DaftarKategori
               categories={categories}
               selectedId={selectedCategoryId}
               onSelect={pilihKategori}
               onChanged={() => void refreshAll()}
+            />
+            <DaftarTugas
+              tasks={tasks}
+              tanggalDipilih={tanggalTugas}
+              onPilihTanggal={(tanggal) => void pilihTanggalTugas(tanggal)}
+              onChanged={() => void setelahTugasBerubah()}
             />
             <DaftarCatatan
               notes={notes}
@@ -214,6 +304,7 @@ export default function MejaKerja({
             )}
           </div>
         </div>
+        </>
       )}
     </div>
   );
