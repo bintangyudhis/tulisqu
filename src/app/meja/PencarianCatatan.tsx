@@ -81,6 +81,31 @@ export default function PencarianCatatan({ onSelect, categoryId }: Props) {
             : `${hasil.length} catatan cocok dengan “${kataKunci.trim()}”.`}
         </p>
       )}
+      {hasil.length > 0 && (
+        <ul className="mt-2 divide-y divide-line border-y border-line">
+          {hasil.map((note) => (
+            <li key={note.id}>
+              <button
+                type="button"
+                onClick={() => onSelect(note.id)}
+                className="block w-full py-3 text-left"
+              >
+                <span className="block font-display text-lg leading-snug font-bold">
+                  {note.title}
+                </span>
+                <span className="mt-1 block text-sm leading-relaxed text-muted">
+                  {note.content.length > 120
+                    ? `${note.content.slice(0, 120)}…`
+                    : note.content}
+                </span>
+                <span className="mt-2 block font-mono text-xs text-muted">
+                  {note.category?.name ?? "Tanpa kategori"}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
