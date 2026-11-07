@@ -9,11 +9,16 @@ menyimpan tautan, dan menyusun tugas harian.
 - Catatan dengan kategori per mata kuliah — buat, baca, ubah, hapus
 - Unggah berkas pendukung seperti PDF, dokumen, dan presentasi ke catatan
 - Penyimpanan tautan referensi di dalam catatan, judul halaman diambil otomatis
-- Daftar tugas harian
+- Daftar tugas harian — tambah, centang selesai, hapus, saring per tanggal
+- Pencarian catatan berdasarkan judul dan isi, bisa disaring per kategori
+- Dasbor ringkas — jumlah catatan dan kategori, tugas hari ini dan yang
+  terlambat, lima catatan terakhir diubah
 
 ## Meja kerja
 
-Halaman `/meja` adalah tempat kerja utama: kolom kiri berisi daftar kategori
+Halaman `/meja` adalah tempat kerja utama: bagian atas berisi ringkasan
+(jumlah catatan dan kategori, tugas hari ini dan yang terlambat, catatan
+terbaru), kolom kiri berisi pencarian, daftar kategori, panel tugas harian,
 dan daftar catatan, kolom kanan berisi isi catatan beserta lampiran dan
 tautannya. Semua perubahan tersimpan lewat API berikut:
 
@@ -27,6 +32,10 @@ tautannya. Semua perubahan tersimpan lewat API berikut:
 | `GET/DELETE /api/notes/[id]/attachments/[attachmentId]` | Tautan unduh dan hapus lampiran |
 | `GET/POST /api/notes/[id]/links` | Daftar dan simpan tautan |
 | `DELETE /api/notes/[id]/links/[linkId]` | Hapus tautan |
+| `GET /api/notes/search` | Cari catatan (`?q=`, saring `?categoryId=`) |
+| `GET/POST /api/tasks` | Daftar tugas (`?date=`, `?all=1`) dan buat tugas |
+| `PATCH/DELETE /api/tasks/[id]` | Ubah, centang selesai, dan hapus tugas |
+| `GET /api/dashboard` | Ringkasan: jumlah, tugas hari ini, catatan terbaru |
 
 Berkas yang diterima: pdf, doc, docx, ppt, pptx, maks 10 MB per berkas.
 Berkas disimpan di bucket Storage `tulisqu-files` (privat; unduhan memakai
