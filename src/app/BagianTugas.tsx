@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function BagianTugas() {
   return (
     <section id="tugas" className="border-b border-line">
@@ -31,6 +33,12 @@ export default function BagianTugas() {
             </p>
           </li>
         </ol>
+        <Link
+          href="/meja"
+          className="mt-8 inline-block bg-accent px-4 py-2 text-sm font-bold text-paper"
+        >
+          Buka meja kerja
+        </Link>
       </div>
     </section>
   );
