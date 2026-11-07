@@ -49,3 +49,12 @@ export type TaskItem = {
   done: boolean;
   createdAt: string;
 };
+
+export type DashboardSummary = {
+  jumlahCatatan: number;
+  jumlahKategori: number;
+  tugasHariIni: number;
+  tugasSelesaiHariIni: number;
+  tugasTerlambat: number;
+  tanggal: string;
+};
