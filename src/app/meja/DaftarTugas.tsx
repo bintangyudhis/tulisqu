@@ -5,6 +5,8 @@ import type { TaskItem } from "./tipe";
 
 type Props = {
   tasks: TaskItem[];
+  tanggalDipilih?: string;
+  onPilihTanggal?: (tanggal: string | null) => void;
   onChanged: () => void;
 };
 
@@ -20,12 +22,47 @@ function formatTanggal(iso: string): string {
   });
 }
 
-export default function DaftarTugas({ tasks, onChanged }: Props) {
+export default function DaftarTugas({
+  tasks,
+  tanggalDipilih,
+  onPilihTanggal,
+  onChanged,
+}: Props) {
   const [judul, setJudul] = useState("");
   const [tanggal, setTanggal] = useState(tanggalHariIni());
   const [menyimpan, setMenyimpan] = useState(false);
   const [mengubahId, setMengubahId] = useState<string | null>(null);
   const [galat, setGalat] = useState<string | null>(null);
+  const tanggalAktif = tanggalDipilih ?? tanggalHariIni();
+  const modeSemua = tanggalDipilih === null;
+
+  function besok(): string {
+    const besok = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    return besok.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
+  }
+
+  async function hapusTugas(task: TaskItem) {
+    setGalat(null);
+    setMengubahId(task.id);
+    try {
+      const response = await fetch(`/api/tasks/${task.id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(body?.error ?? "Tugas tidak bisa dihapus.");
+      }
+      onChanged();
+    } catch (error) {
+      setGalat(
+        error instanceof Error ? error.message : "Tugas tidak bisa dihapus.",
+      );
+    } finally {
+      setMengubahId(null);
+    }
+  }
 
   async function ubahStatus(task: TaskItem) {
     setGalat(null);
@@ -87,6 +124,50 @@ export default function DaftarTugas({ tasks, onChanged }: Props) {
         Tugas harian
       </h2>
       <form onSubmit={(event) => void tambahTugas(event)} className="mt-4 space-y-3">
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => onPilihTanggal?.(tanggalHariIni())}
+            className={`border px-3 py-1.5 text-sm font-bold ${
+              !modeSemua && tanggalAktif === tanggalHariIni()
+                ? "border-accent bg-accent text-paper"
+                : "border-line"
+            }`}
+          >
+            Hari ini
+          </button>
+          <button
+            type="button"
+            onClick={() => onPilihTanggal?.(besok())}
+            className={`border px-3 py-1.5 text-sm font-bold ${
+              !modeSemua && tanggalAktif === besok()
+                ? "border-accent bg-accent text-paper"
+                : "border-line"
+            }`}
+          >
+            Besok
+          </button>
+          <button
+            type="button"
+            onClick={() => onPilihTanggal?.(null)}
+            className={`border px-3 py-1.5 text-sm font-bold ${
+              modeSemua ? "border-accent bg-accent text-paper" : "border-line"
+            }`}
+          >
+            Semua
+          </button>
+          <label className="flex items-center gap-2 text-sm">
+            <span className="font-bold">Tanggal</span>
+            <input
+              type="date"
+              value={tanggalAktif}
+              onChange={(event) =>
+                onPilihTanggal?.(event.target.value || null)
+              }
+              className="border border-line bg-paper px-2 py-1.5 text-sm"
+            />
+          </label>
+        </div>
         <label className="block">
           <span className="text-sm font-bold">Tugas baru</span>
           <input
@@ -149,6 +230,15 @@ export default function DaftarTugas({ tasks, onChanged }: Props) {
                   {task.done ? " · selesai" : ""}
                 </span>
               </span>
+              <button
+                type="button"
+                disabled={mengubahId === task.id}
+                onClick={() => void hapusTugas(task)}
+                aria-label={`Hapus tugas: ${task.title}`}
+                className="px-2 py-1 text-sm font-bold text-accent disabled:opacity-50"
+              >
+                Hapus
+              </button>
             </li>
           ))}
         </ul>
