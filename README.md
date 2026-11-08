@@ -4,6 +4,10 @@ Aplikasi produktivitas untuk mencatat dan mengorganisasi materi kuliah.
 Catatan dikelompokkan per mata kuliah. Pengguna juga bisa mengunggah berkas,
 menyimpan tautan, dan menyusun tugas harian.
 
+Status: selesai — semua fitur rencana sudah dibangun dan live di
+https://tulisqu.vercel.app. Tema tampilan "Meja Kuliah": kertas terang
+hangat, aksen hijau daun solid, tanpa gradasi dan tanpa emoji.
+
 ## Fitur
 
 - Catatan dengan kategori per mata kuliah — buat, baca, ubah, hapus
