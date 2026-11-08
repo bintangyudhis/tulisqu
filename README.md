@@ -68,6 +68,15 @@ program ini. Deploy Vercel dihemat dengan `vercel.json`: commit yang pesannya
 mengandung `[skip-vercel]` tidak memicu build; deploy harian memakai commit
 kosong tanpa penanda itu.
 
+## Deploy
+
+Deploy di Vercel dari repo ini, dengan environment `DATABASE_URL`,
+`DIRECT_URL`, `SUPABASE_URL`, dan `SUPABASE_SERVICE_ROLE_KEY` di project
+Vercel. Alamat produksi: https://tulisqu.vercel.app, dengan subdomain
+https://tulis.bintangyudhis.my.id sebagai alamat utama (CNAME di Cloudflare
+mengarah ke `cname.vercel-dns.com`; alamat `*.vercel.app` dialihkan ke
+subdomain).
+
 ## Skema
 
 Migrasi `0001_tulis_init` membuat tiga tabel: `TulisCategory` (nama kategori),
