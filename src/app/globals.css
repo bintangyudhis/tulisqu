@@ -13,6 +13,7 @@
   --color-ink: #20241c;
   --color-muted: #5d665a;
   --color-accent: #1f5c3d;
+  --color-danger: #8f2d1e;
   --color-line: #d9ddd0;
   --font-sans: var(--font-plex-sans);
   --font-display: var(--font-bricolage);
@@ -23,6 +24,19 @@ html,
 body {
   /* Pagar anti melebar: halaman tidak boleh bisa digeser menyamping di HP. */
   overflow-x: clip;
+}
+
+/* Gulir halus ke jangkar beranda; dimatikan bila pengguna meminta
+ * gerak minimal. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Jangkar beranda tidak tertutup bilah atas yang menempel. */
+section[id] {
+  scroll-margin-top: 4.5rem;
 }
 
 body {
