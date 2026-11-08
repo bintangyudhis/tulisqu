@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function BilahAtas() {
   return (
-    <header className="border-b border-line bg-paper">
+    <header className="sticky top-0 z-50 border-b border-line bg-paper">
       <div className="mx-auto flex max-w-6xl flex-wrap items-baseline gap-x-8 gap-y-2 px-4 py-4 sm:px-6">
         <Link href="/" className="font-display text-xl font-extrabold tracking-tight">
           Tulisqu
