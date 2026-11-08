@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function KakiHalaman() {
   return (
     <footer className="bg-paper">
@@ -6,6 +8,9 @@ export default function KakiHalaman() {
         <p className="text-sm text-muted">
           Catatan, berkas, tautan, dan tugas harian dalam satu tempat.
         </p>
+        <Link href="/meja" className="text-sm font-bold text-accent">
+          Buka meja kerja
+        </Link>
       </div>
     </footer>
   );
