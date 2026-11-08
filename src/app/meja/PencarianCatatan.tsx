@@ -70,7 +70,7 @@ export default function PencarianCatatan({ onSelect, categoryId }: Props) {
       </label>
       {mencari && <p className="mt-3 text-sm text-muted">Mencari…</p>}
       {galat && (
-        <p role="alert" className="mt-3 text-sm text-accent">
+        <p role="alert" className="mt-3 text-sm font-bold text-danger">
           {galat}
         </p>
       )}
