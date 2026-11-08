@@ -140,3 +140,38 @@
   sama sebelum deploy ulang. Pelajaran: ganti nama tabel di SQL
   migrasi wajib cek SEMUA kemunculan identifier (CREATE, INDEX,
   ALTER, constraint), bukan hanya yang terlihat pertama.
+
+## Pelajaran Day 21 (polish + README final + sapuan keamanan penuh, 8 Nov 2026)
+
+- 20 commit fitur + 1 commit deploy, semua ter-push. Issue #7 (polish +
+  README final) TERTUTUP via `Closes #7` di badan pesan commit README
+  final, sesuai pola Day 18–20.
+- Polish UI: bilah atas menempel (`sticky top-0`, sesuai tema hallmark);
+  hero dan footer mendapat tombol "Buka meja kerja"; `loading.tsx`
+  diganti kerangka muat; metadata Open Graph + `metadataBase` di layout;
+  gulir halus ke jangkar (dimatikan bila `prefers-reduced-motion`) dan
+  `scroll-margin-top` supaya jangkar tidak tertutup bilah menempel.
+- Temuan polish nyata: SEMUA pesan `role="alert"` memakai `text-accent`
+  (hijau) — warna sukses dipakai untuk galat. Diperbaiki dengan token
+  baru `--color-danger` (#8f2d1e) di `globals.css`, dipakai di 7 komponen
+  meja kerja; tombol hapus (tugas, catatan, kategori) ikut memakai warna
+  galat. Input tanggal di `DaftarTugas` menampilkan hari ini saat filter
+  "Semua" aktif — diperbaiki menjadi kosong pada mode Semua.
+- Sapuan keamanan penuh: tidak ada secret di history (hanya placeholder
+  `.env.example` dan prose AGENTS.md); `.env*` diabaikan; kunci service
+  role hanya dari env server, tanpa `NEXT_PUBLIC_*`. Validasi server,
+  batas 1 MB, rate limit tulis 30/menit, pagar SSRF di link-preview, dan
+  unggah ber-whitelist sudah ada sejak Day 19–20. `npm audit` TIDAK bisa
+  jalan di VM (registry menolak: policy_denied) — dicatat, bukan dianggap
+  lolos. Header live sebelum Day 21 hanya punya HSTS dari Vercel;
+  `next.config.ts` kini menambah `X-Content-Type-Options: nosniff`,
+  `X-Frame-Options: DENY`, `Referrer-Policy`, dan `Permissions-Policy`.
+  Belum ada autentikasi di tulisqu — batasan yang diketahui, dicatat di
+  README sebagai alat pribadi satu pengguna.
+- Jebakan commit: `git add <file>` men-stage SEMUA perubahan file itu,
+  jadi dua unit polish dalam satu file bisa masuk satu commit bila
+  diedit sebelum add pertama. Pisahkan edit dan add per unit bila pesan
+  commit harus menyebut satu unit saja.
+- Subdomain `tulis.bintangyudhis.my.id` dipasang sesudah deploy final
+  Day 21 via API Vercel + redirect satu pintu dari `tulisqu.vercel.app`,
+  lalu Yudhis tambah CNAME di Cloudflare.
