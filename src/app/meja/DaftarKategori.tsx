@@ -172,7 +172,7 @@ export default function DaftarKategori({
                 <button
                   type="button"
                   onClick={() => void hapusKategori(category)}
-                  className="shrink-0 text-xs text-muted hover:text-accent"
+                  className="shrink-0 text-xs font-bold text-danger"
                 >
                   Hapus
                 </button>
