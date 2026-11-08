@@ -73,10 +73,30 @@ kosong tanpa penanda itu.
 Migrasi `0001_tulis_init` membuat tiga tabel: `TulisCategory` (nama kategori),
 `Note` (judul, isi, kategori opsional), dan `Task` (judul, tanggal, status
 selesai). Migrasi `0002_tulis_files_links` menambah `Attachment` (nama berkas,
-tipe MIME, ukuran, jalur Storage) dan `Link` (alamat dan judul halaman),
+tipe MIME, ukuran, jalur Storage) dan `TulisLink` (alamat dan judul halaman),
 keduanya menempel pada catatan dan ikut terhapus saat catatannya dihapus.
-Nama migrasi dibuat unik agar tidak bentrok dengan repo lain yang memakai
-database yang sama.
+Nama tabel memakai awalan `Tulis` karena tabel `Link` dan `Category` di
+database bersama sudah dipakai repo pendekin dan dompetku-web. Nama migrasi
+dibuat unik agar tidak bentrok dengan repo lain yang memakai database yang
+sama.
+
+## Keamanan
+
+- Semua masukan divalidasi di sisi server (`src/lib/validation.ts`):
+  panjang teks, format tanggal `YYYY-MM-DD`, dan alamat tautan http/https.
+- Badan JSON dibatasi 1 MB; penulisan API dibatasi 30 permintaan per menit
+  per IP (`src/lib/rate-limit.ts`).
+- Pengambilan judul tautan dijaga dari SSRF (`src/lib/link-preview.ts`):
+  hanya http/https, tolak host lokal dan IP privat termasuk hasil DNS,
+  ikuti maksimal 3 redirect, batas isi 256 KB, timeout 8 detik.
+- Unggah berkas hanya menerima pdf, doc, docx, ppt, pptx, maks 10 MB;
+  unduhan memakai tautan bertanda tangan 1 jam dari bucket privat.
+- Kunci service role Supabase hanya dibaca dari environment server, tidak
+  pernah memakai awalan `NEXT_PUBLIC_*`; tidak ada secret di repo maupun
+  riwayat git.
+- Batasan yang diketahui: tulisqu belum memakai autentikasi — alat pribadi
+  satu pengguna, sama seperti repo streak lain sebelum auth ditambahkan.
+  Jangan memakai instalasi ini untuk data bersama banyak pengguna.
 
 ## Lisensi
 
