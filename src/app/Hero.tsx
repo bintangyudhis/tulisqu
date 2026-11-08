@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Hero() {
   return (
     <section className="border-b border-line">
@@ -14,6 +16,20 @@ export default function Hero() {
             tautan referensi di tempat yang sama dengan catatan, dan menata
             tugas harian supaya tidak ada yang tercecer di antara jadwal.
           </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link
+              href="/meja"
+              className="bg-accent px-5 py-2.5 text-sm font-bold text-paper"
+            >
+              Buka meja kerja
+            </Link>
+            <Link
+              href="/#catatan"
+              className="border border-line px-5 py-2.5 text-sm font-bold"
+            >
+              Lihat cara kerja
+            </Link>
+          </div>
         </div>
         <aside className="border-t-2 border-accent pt-4">
           <h2 className="text-sm font-bold tracking-wide uppercase">Daftar isi meja ini</h2>
