@@ -156,7 +156,7 @@ export default function EditorCatatan({
             type="button"
             onClick={() => void hapus()}
             disabled={sibuk}
-            className="text-sm text-muted hover:text-accent disabled:opacity-50"
+            className="text-sm font-bold text-danger disabled:opacity-50"
           >
             Hapus catatan
           </button>
