@@ -212,7 +212,7 @@ export default function MejaKerja({
         dan tautan yang membahas hal yang sama.
       </p>
       {galat && (
-        <p role="alert" className="mt-6 text-sm text-accent">
+        <p role="alert" className="mt-6 text-sm font-bold text-danger">
           {galat}
         </p>
       )}
