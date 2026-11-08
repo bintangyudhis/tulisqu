@@ -160,10 +160,11 @@ export default function DaftarTugas({
             <span className="font-bold">Tanggal</span>
             <input
               type="date"
-              value={tanggalAktif}
+              value={modeSemua ? "" : tanggalAktif}
               onChange={(event) =>
                 onPilihTanggal?.(event.target.value || null)
               }
+              aria-label="Pilih tanggal tugas"
               className="border border-line bg-paper px-2 py-1.5 text-sm"
             />
           </label>
@@ -235,7 +236,7 @@ export default function DaftarTugas({
                 disabled={mengubahId === task.id}
                 onClick={() => void hapusTugas(task)}
                 aria-label={`Hapus tugas: ${task.title}`}
-                className="px-2 py-1 text-sm font-bold text-accent disabled:opacity-50"
+                className="px-2 py-1 text-sm font-bold text-danger disabled:opacity-50"
               >
                 Hapus
               </button>
