@@ -139,7 +139,7 @@ export default function EditorCatatan({
         />
       </label>
       {galat && (
-        <p role="alert" className="mt-4 text-sm text-accent">
+        <p role="alert" className="mt-4 text-sm font-bold text-danger">
           {galat}
         </p>
       )}
