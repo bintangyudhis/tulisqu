@@ -133,7 +133,7 @@ export default function TautanCatatan({ noteId, links, onChanged }: Props) {
         </button>
       </form>
       {galat && (
-        <p role="alert" className="mt-3 text-sm text-accent">
+        <p role="alert" className="mt-3 text-sm font-bold text-danger">
           {galat}
         </p>
       )}
