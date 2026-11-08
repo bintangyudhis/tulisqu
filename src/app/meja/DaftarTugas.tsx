@@ -189,7 +189,7 @@ export default function DaftarTugas({
           />
         </label>
         {galat && (
-          <p role="alert" className="text-sm text-accent">
+          <p role="alert" className="text-sm font-bold text-danger">
             {galat}
           </p>
         )}
