@@ -23,9 +23,17 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tulisqu.vercel.app"),
   title: "Tulisqu — Catatan Kuliah, Berkas, dan Tugas Harian",
   description:
     "Tulisqu merapikan catatan per mata kuliah, menyimpan berkas dan tautan referensi di dalam catatan, dan menyusun tugas harian dalam satu tempat.",
+  openGraph: {
+    title: "Tulisqu — Catatan Kuliah, Berkas, dan Tugas Harian",
+    description:
+      "Satu meja untuk semua materi kuliah: catatan per mata kuliah, berkas, tautan referensi, dan tugas harian.",
+    type: "website",
+    locale: "id_ID",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
